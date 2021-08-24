@@ -1,34 +1,41 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { v4 as uuid } from 'uuid';
-import { RenderTable } from "../actions";
+import { createSelector, createSlice } from "@reduxjs/toolkit";
 import { getTableData } from "../api";
-import { TableRow } from "../api/types";
+import { RootState } from "../store";
+import { parseDataWithKids } from "../utils";
+import { ParsedTable } from "../utils/types";
 
 
-const initialState: RenderTable[] = [];
+const initialState: ParsedTable = {};
 
-const tableProcessor = (row: TableRow): RenderTable[] => {
-  const { data, kids } = row
-  const kidTables = Object.entries(kids)
-    .flatMap(([tableName, tableRecords]) => tableRecords.records
-    .flatMap(tableProcessor)
-  )
-  const parsedData: RenderTable = {
-    rowId: uuid(),
-    
-  }
-  return 
-}
 const tableSlice = createSlice({
   name: "table",
   initialState,
-  reducers: {},
+  reducers: {
+    deleteRow: (state, action) => {
+      if (state[action.payload.tableName]) {
+        state[action.payload.tableName] = state[action.payload.tableName]?.filter(({ id }) => id !== action.payload.id) ?? []
+      }
+    }
+  },
   extraReducers: (builder) => {
     builder.addCase(getTableData.fulfilled, (state, action) => {
-      // state = action.payload.map()
+      state = parseDataWithKids(action.payload, 'root', state)
     })
   },
 });
 
-export const {} = tableSlice.actions;
+export const { deleteRow } = tableSlice.actions;
+const selectRoot = (state: RootState) => state.table
+export const createSelectTable = (tableName: string) => createSelector(
+  selectRoot,
+  root => root[tableName] ?? []
+)
+export const createSelectTableKeys = (tableName: string) =>
+  createSelector(
+    createSelectTable(tableName),
+    (table) => {
+      const first = table && table[0] ? table[0] : {}
+      return Object.keys(first);
+    }
+  );
 export default tableSlice.reducer;

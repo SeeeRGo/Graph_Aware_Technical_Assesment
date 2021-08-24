@@ -1,18 +1,6 @@
 import { TableRow } from "./types";
 
-export const GET_TABLE_DATA = 'GET_TABLE_DATA'
-export const dataKeys = [
-  "Identification number",
-      'Name',
-      'Gender',
-      'Risk',
-      "Hair length",
-      'IQ',
-      "Admission date",
-      "Last breakdown",
-      "Yearly fee",
-      "Knows the Joker?",
-]
+export const GET_TABLE_DATA = 'GET_TABLE_DATA';
 export const apiResponse: TableRow[] = [
   {
     data: {

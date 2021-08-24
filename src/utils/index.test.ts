@@ -1,5 +1,5 @@
-import { parseDataWithKids, parseOnlyData } from ".";
-import { parsed, parsedOnlyData, rawKidsData } from "./__mocks__";
+import { createKidsTablesRefs, parseDataWithKids } from ".";
+import { multipleKidsDataRefs, parsed, rawKidsData, rawMultipleKidsData } from "./__mocks__";
 
 describe("parseDataWithKids", () => {
   test("parses kids field into proper render data", () => {
@@ -12,7 +12,9 @@ describe("parseDataWithKids", () => {
   });
 });
 
-test('parseOnlyData', () => {
-  const actual = parseOnlyData(rawKidsData, 'root', {})
-  expect(actual).toEqual(parsedOnlyData);
+describe('createKidsTablesRefs', () => {
+  test('creates list of refs for child data tables', () => {
+    const actual = createKidsTablesRefs("root", rawMultipleKidsData);
+    expect(actual).toEqual(multipleKidsDataRefs);
+  })
 })
